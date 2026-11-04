@@ -1,0 +1,3037 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PatentVault | Patent Management</title>
+    <style>
+        :root {
+            --navy: #20212b;
+            --navy-light: #353644;
+            --blue: #7558e8;
+            --bg: #f6f5fb;
+            --surface: #ffffff;
+            --text: #292936;
+            --muted: #747486;
+            --border: #e6e3f0;
+            --green: #16806a;
+            --green-bg: #e1f6ef;
+            --amber: #98621a;
+            --amber-bg: #fff2d9;
+            --red: #b83c5a;
+            --red-bg: #ffedf1;
+            --shadow: 0 10px 28px rgba(45, 39, 90, 0.07);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Inter, "Segoe UI", Arial, sans-serif;
+            color: var(--text);
+            background: var(--bg);
+        }
+
+        button,
+        input,
+        select {
+            font: inherit;
+        }
+
+        button {
+            cursor: pointer;
+        }
+
+        .app {
+            min-height: 100vh;
+            display: grid;
+            grid-template-columns: 245px 1fr;
+        }
+
+        aside {
+            background: var(--navy);
+            color: #fff;
+            padding: 26px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 11px;
+            padding: 0 10px;
+        }
+
+        .brand-mark {
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: grid;
+            place-items: center;
+            background: #fff;
+            color: var(--navy);
+            font-size: 21px;
+            font-weight: 800;
+        }
+
+        .brand h1 {
+            font-size: 18px;
+            margin: 0;
+            letter-spacing: .2px;
+        }
+
+        .brand p {
+            margin: 4px 0 0;
+            color: #c4d4e8;
+            font-size: 12px;
+        }
+
+        .nav-label {
+            color: #9fb5d0;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.4px;
+            padding: 0 12px;
+        }
+
+        nav {
+            display: grid;
+            gap: 7px;
+        }
+
+        .nav-btn {
+            border: 0;
+            color: #d9e5f3;
+            background: transparent;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-align: left;
+            padding: 12px;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+
+        .nav-btn:hover,
+        .nav-btn.active {
+            background: var(--navy-light);
+            color: #fff;
+        }
+
+        .nav-icon {
+            width: 20px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        .side-note {
+            margin-top: auto;
+            border: 1px solid rgba(255, 255, 255, .15);
+            border-radius: 12px;
+            padding: 14px;
+            color: #d9e5f3;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .side-note strong {
+            display: block;
+            color: #fff;
+            margin-bottom: 5px;
+        }
+
+        main {
+            min-width: 0;
+        }
+
+        header {
+            min-height: 78px;
+            background: var(--surface);
+            border-bottom: 1px solid var(--border);
+            padding: 18px 32px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .crumb {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .crumb strong {
+            color: var(--text);
+            font-weight: 650;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .demo-pill {
+            font-size: 11px;
+            font-weight: 700;
+            color: var(--blue);
+            background: #eeebff;
+            padding: 7px 10px;
+            border-radius: 20px;
+        }
+
+        .avatar {
+            display: grid;
+            place-items: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: #e8e3ff;
+            color: var(--navy);
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .content {
+            padding: 30px 32px 42px;
+            max-width: 1500px;
+            margin: auto;
+        }
+
+        .page-heading {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .page-heading h2 {
+            font-size: 27px;
+            letter-spacing: -.6px;
+            margin: 0;
+        }
+
+        .page-heading p {
+            margin: 8px 0 0;
+            color: var(--muted);
+            font-size: 14px;
+        }
+
+        .primary-btn,
+        .secondary-btn {
+            border-radius: 9px;
+            padding: 11px 15px;
+            font-size: 13px;
+            font-weight: 700;
+            border: 1px solid transparent;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .primary-btn {
+            background: linear-gradient(135deg, var(--blue), #927ff3);
+            color: #fff;
+            box-shadow: 0 5px 13px rgba(101, 88, 232, .18);
+        }
+
+        .primary-btn:hover {
+            background: linear-gradient(135deg, #6245d7, #8069e9);
+        }
+
+        .secondary-btn {
+            background: #fff;
+            color: var(--text);
+            border-color: var(--border);
+        }
+
+        .secondary-btn:hover {
+            background: #f8fafc;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 19px;
+            box-shadow: var(--shadow);
+        }
+
+        .stat-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+        }
+
+        .stat-label {
+            color: var(--muted);
+            font-size: 13px;
+        }
+
+        .stat-icon {
+            width: 35px;
+            height: 35px;
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            background: #eeecff;
+            color: var(--blue);
+            font-size: 17px;
+        }
+
+        .stat-value {
+            font-size: 29px;
+            font-weight: 750;
+            margin-top: 14px;
+            letter-spacing: -.8px;
+        }
+
+        .stat-foot {
+            font-size: 11px;
+            color: var(--muted);
+            margin-top: 5px;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: minmax(0, 1.55fr) minmax(280px, .85fr);
+            gap: 20px;
+            align-items: start;
+        }
+
+        .panel {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .panel-head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 14px;
+            padding: 20px 21px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .panel-head h3 {
+            margin: 0;
+            font-size: 15px;
+        }
+
+        .panel-head p {
+            color: var(--muted);
+            font-size: 12px;
+            margin: 5px 0 0;
+        }
+
+        .text-btn {
+            border: 0;
+            background: transparent;
+            color: var(--blue);
+            font-size: 12px;
+            font-weight: 750;
+            padding: 5px;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            white-space: nowrap;
+        }
+
+        th {
+            color: var(--muted);
+            font-size: 11px;
+            font-weight: 700;
+            background: #fbfcfe;
+        }
+
+        th,
+        td {
+            padding: 14px 20px;
+            border-bottom: 1px solid #edf0f5;
+        }
+
+        td {
+            font-size: 12px;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: 0;
+        }
+
+        .patent-title {
+            font-weight: 700;
+            font-size: 12px;
+        }
+
+        .subtext {
+            color: var(--muted);
+            font-size: 11px;
+            margin-top: 4px;
+        }
+
+        .status {
+            display: inline-flex;
+            align-items: center;
+            border-radius: 20px;
+            padding: 5px 9px;
+            font-size: 10px;
+            font-weight: 750;
+        }
+
+        .granted {
+            color: var(--green);
+            background: var(--green-bg);
+        }
+
+        .pending {
+            color: var(--amber);
+            background: var(--amber-bg);
+        }
+
+        .terminated {
+            color: var(--red);
+            background: var(--red-bg);
+        }
+
+        .quick-list {
+            padding: 7px 20px 15px;
+        }
+
+        .quick-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 0;
+            border-bottom: 1px solid #edf0f5;
+        }
+
+        .quick-item:last-child {
+            border-bottom: 0;
+        }
+
+        .quick-icon {
+            width: 36px;
+            height: 36px;
+            display: grid;
+            place-items: center;
+            border-radius: 10px;
+            background: #eeebff;
+            color: #7558e8;
+            flex: 0 0 auto;
+        }
+
+        .quick-copy {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .quick-copy strong {
+            font-size: 12px;
+            display: block;
+        }
+
+        .quick-copy span {
+            color: var(--muted);
+            display: block;
+            font-size: 11px;
+            margin-top: 4px;
+            line-height: 1.4;
+        }
+
+        .arrow {
+            color: #94a3b8;
+            font-size: 18px;
+        }
+
+        .report-hint {
+            margin: 0 20px 20px;
+            border-radius: 10px;
+            padding: 13px;
+            background: #f4f1ff;
+            color: #5d5688;
+            font-size: 11px;
+            line-height: 1.5;
+        }
+
+        .section-page {
+            display: none;
+        }
+
+        .section-page.active {
+            display: block;
+        }
+
+        .empty-panel {
+            background: #fff;
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            padding: 32px;
+        }
+
+        .empty-panel h3 {
+            margin-top: 0;
+        }
+
+        .empty-panel p {
+            color: var(--muted);
+            line-height: 1.6;
+            font-size: 14px;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+        }
+
+        .search-input,
+        .filter-select {
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            background: #fff;
+            border-radius: 9px;
+            color: var(--text);
+            font-size: 13px;
+        }
+
+        .search-input {
+            min-width: 230px;
+            flex: 1;
+        }
+
+        .report-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 15px;
+        }
+
+        .report-card {
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 18px;
+            background: #fff;
+        }
+
+        .report-card h4 {
+            margin: 0 0 7px;
+            font-size: 14px;
+        }
+
+        .report-card p {
+            color: var(--muted);
+            font-size: 12px;
+            line-height: 1.5;
+            min-height: 36px;
+        }
+
+        .report-card button {
+            margin-top: 5px;
+        }
+
+        .notice {
+            background: #fff8e7;
+            border: 1px solid #f4e2b2;
+            color: #7b5a13;
+            border-radius: 10px;
+            padding: 13px 15px;
+            font-size: 12px;
+            line-height: 1.5;
+            margin-bottom: 18px;
+        }
+
+        footer {
+            padding: 20px 32px;
+            color: var(--muted);
+            font-size: 11px;
+            text-align: center;
+        }
+
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 14px;
+            margin: 16px 0;
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--muted);
+        }
+
+        .field input,
+        .field select,
+        .field textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid var(--border);
+            border-radius: 9px;
+            color: var(--text);
+            background: #fff;
+            font: inherit;
+        }
+
+        .field textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .click-title {
+            border: 0;
+            background: transparent;
+            color: var(--blue);
+            font-weight: 750;
+            padding: 0;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        .inline-note {
+            color: var(--muted);
+            font-size: 11px;
+            line-height: 1.5;
+            margin-top: 8px;
+        }
+
+        .message {
+            display: none;
+            margin: 14px 0;
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .message.show {
+            display: block;
+        }
+
+        .message.success {
+            color: var(--green);
+            background: var(--green-bg);
+            border: 1px solid #b7e4cb;
+        }
+
+        .message.info {
+            color: #496581;
+            background: #f4f8ff;
+            border: 1px solid #dbeafe;
+        }
+
+        .name-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin: 12px 0 18px;
+        }
+
+        .name-chip {
+            padding: 7px 10px;
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            background: #f8fafc;
+            font-size: 12px;
+        }
+
+        .compact-table th,
+        .compact-table td {
+            padding: 12px 15px;
+        }
+
+        @media (max-width:700px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full-width {
+                grid-column: auto;
+            }
+        }
+
+        @media (max-width: 1050px) {
+            .app {
+                grid-template-columns: 210px 1fr;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 700px) {
+            .app {
+                display: block;
+            }
+
+            aside {
+                padding: 15px;
+                gap: 16px;
+            }
+
+            .brand {
+                padding: 0 5px;
+            }
+
+            nav {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+
+            .nav-label,
+            .side-note {
+                display: none;
+            }
+
+            header {
+                padding: 14px 18px;
+            }
+
+            .content {
+                padding: 22px 16px 30px;
+            }
+
+            .page-heading {
+                flex-direction: column;
+            }
+
+            .page-heading h2 {
+                font-size: 24px;
+            }
+
+            .stats {
+                gap: 10px;
+            }
+
+            .stat-card {
+                padding: 14px;
+            }
+
+            .stat-value {
+                font-size: 25px;
+            }
+
+            .report-grid {
+                grid-template-columns: 1fr;
+            }
+
+            footer {
+                padding: 18px;
+            }
+        }
+
+        /* Expanded charcoal + electric violet visual system */
+        :root {
+            --navy: #252338;
+            --navy-light: #393454;
+            --blue: #7558E8;
+            --bg: #F7F6FC;
+            --surface: #FFFFFF;
+            --text: #242238;
+            --muted: #77758F;
+            --border: #E8E5F2;
+            --green: #16866D;
+            --green-bg: #E2F7EF;
+            --amber: #A96B12;
+            --amber-bg: #FFF2D8;
+            --red: #C04468;
+            --red-bg: #FDEAF0;
+            --shadow: 0 12px 30px rgba(43, 34, 92, .07);
+            --violet-soft: #F0ECFF;
+            --cyan: #169EAD;
+            --peach: #E78B63;
+            --gold: #D9A441;
+        }
+
+        body {
+            background: radial-gradient(ellipse at 90% 0%, #F0ECFF 0%, transparent 30%), var(--bg);
+        }
+
+        aside {
+            background: linear-gradient(180deg, #252338 0%, #302B4B 58%, #3B315D 100%);
+        }
+
+        .brand-mark {
+            width: 42px;
+            height: 42px;
+            border-radius: 13px;
+            display: grid;
+            place-items: center;
+            color: #fff;
+            background: linear-gradient(145deg, #8B70F4, #5E45D2);
+            box-shadow: 0 6px 16px rgba(117, 88, 232, .28);
+            flex: 0 0 auto;
+        }
+
+        .brand-mark svg {
+            width: 27px;
+            height: 27px;
+            display: block;
+        }
+
+        .nav-btn {
+            transition: background .18s ease, transform .18s ease;
+        }
+
+        .nav-btn:hover {
+            transform: translateX(2px);
+        }
+
+        .nav-btn.active {
+            background: linear-gradient(100deg, #7558E8, #9476F5);
+            box-shadow: 0 6px 16px rgba(117, 88, 232, .22);
+        }
+
+        .side-note {
+            background: rgba(255, 255, 255, .05);
+        }
+
+        header {
+            background: rgba(255, 255, 255, .92);
+            backdrop-filter: blur(12px);
+        }
+
+        .demo-pill {
+            color: #6848D8;
+            background: #F0ECFF;
+        }
+
+        .avatar {
+            background: linear-gradient(135deg, #E5DEFF, #DDF7F4);
+            color: #4B3C8D;
+        }
+
+        .content {
+            max-width: 1600px;
+        }
+
+        #dashboard>.page-heading {
+            position: relative;
+            overflow: hidden;
+            padding: 27px 30px;
+            border-radius: 18px;
+            background: linear-gradient(115deg, #EDE8FF 0%, #F7F3FF 48%, #E3F8F7 100%);
+            border: 1px solid #E3DDFB;
+            margin-bottom: 22px;
+        }
+
+        #dashboard .page-heading h2 {
+            color: #2D2850;
+            font-size: 30px;
+        }
+
+        #dashboard .page-heading p {
+            color: #68627F;
+        }
+
+        #dashboard .page-heading .primary-btn {
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-card {
+            position: relative;
+            overflow: hidden;
+            transition: transform .2s ease, box-shadow .2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 16px 32px rgba(43, 34, 92, .11);
+        }
+
+        .stat-card:before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: var(--card-accent, #7558E8);
+        }
+
+        .stat-card:nth-child(1) {
+            --card-accent: #7558E8;
+            background: linear-gradient(135deg, #fff 55%, #F3EFFF);
+        }
+
+        .stat-card:nth-child(2) {
+            --card-accent: #169EAD;
+            background: linear-gradient(135deg, #fff 55%, #E8FAFA);
+        }
+
+        .stat-card:nth-child(3) {
+            --card-accent: #E78B63;
+            background: linear-gradient(135deg, #fff 55%, #FFF0E8);
+        }
+
+        .stat-card:nth-child(4) {
+            --card-accent: #D9A441;
+            background: linear-gradient(135deg, #fff 55%, #FFF7E5);
+        }
+
+        .stat-card:nth-child(1) .stat-icon {
+            background: #EEE9FF;
+            color: #7558E8;
+        }
+
+        .stat-card:nth-child(2) .stat-icon {
+            background: #DFF7F7;
+            color: #138A98;
+        }
+
+        .stat-card:nth-child(3) .stat-icon {
+            background: #FFE8DC;
+            color: #D8754B;
+        }
+
+        .stat-card:nth-child(4) .stat-icon {
+            background: #FFF0C9;
+            color: #A87514;
+        }
+
+        .stat-value {
+            color: #292640;
+        }
+
+        .panel {
+            transition: box-shadow .2s ease;
+        }
+
+        .panel:hover {
+            box-shadow: 0 14px 34px rgba(43, 34, 92, .09);
+        }
+
+        .panel-head {
+            background: linear-gradient(90deg, #FFFFFF, #FBFAFF);
+        }
+
+        th {
+            background: #F4F1FF;
+            color: #665D8B;
+            letter-spacing: .55px;
+        }
+
+        tbody tr:hover {
+            background: #FAF8FF;
+        }
+
+        .quick-item {
+            border-radius: 10px;
+            padding-left: 8px;
+            padding-right: 8px;
+            transition: background .18s ease;
+        }
+
+        .quick-item:hover {
+            background: #F8F5FF !important;
+        }
+
+        .quick-item:nth-child(1) .quick-icon {
+            background: #EEE9FF;
+            color: #7558E8;
+        }
+
+        .quick-item:nth-child(2) .quick-icon {
+            background: #DFF7F7;
+            color: #138A98;
+        }
+
+        .quick-item:nth-child(3) .quick-icon {
+            background: #FFF0D8;
+            color: #A87514;
+        }
+
+        .report-hint {
+            background: linear-gradient(100deg, #F0ECFF, #E8F9F8);
+            color: #5B527E;
+            border: 1px solid #E7E0FF;
+        }
+
+        .primary-btn {
+            background: linear-gradient(120deg, #7558E8, #9575F4);
+            box-shadow: 0 6px 15px rgba(117, 88, 232, .2);
+            transition: transform .18s ease, box-shadow .18s ease;
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 9px 20px rgba(117, 88, 232, .28);
+        }
+
+        .secondary-btn {
+            transition: all .18s ease;
+        }
+
+        .secondary-btn:hover {
+            color: #6848D8;
+            border-color: #CFC4FF;
+            background: #F7F4FF;
+        }
+
+        .click-title {
+            color: #6848D8;
+        }
+
+        .click-title:hover {
+            text-decoration: underline;
+        }
+
+        .report-card {
+            position: relative;
+            overflow: hidden;
+            transition: transform .18s ease, box-shadow .18s ease;
+        }
+
+        .report-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px rgba(43, 34, 92, .08);
+        }
+
+        .report-card:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--report-accent, #7558E8);
+        }
+
+        .report-card:nth-child(6n+1) {
+            --report-accent: #7558E8;
+            background: linear-gradient(145deg, #fff 72%, #F1EDFF);
+        }
+
+        .report-card:nth-child(6n+2) {
+            --report-accent: #169EAD;
+            background: linear-gradient(145deg, #fff 72%, #E8FAFA);
+        }
+
+        .report-card:nth-child(6n+3) {
+            --report-accent: #E78B63;
+            background: linear-gradient(145deg, #fff 72%, #FFF0E8);
+        }
+
+        .report-card:nth-child(6n+4) {
+            --report-accent: #D9A441;
+            background: linear-gradient(145deg, #fff 72%, #FFF7E5);
+        }
+
+        .report-card:nth-child(6n+5) {
+            --report-accent: #D45F8A;
+            background: linear-gradient(145deg, #fff 72%, #FFF0F5);
+        }
+
+        .report-card:nth-child(6n) {
+            --report-accent: #4F86D9;
+            background: linear-gradient(145deg, #fff 72%, #ECF4FF);
+        }
+
+        .empty-panel {
+            box-shadow: var(--shadow);
+        }
+
+        .notice {
+            background: #FFF5DF;
+            border-color: #F5E3B5;
+            color: #855A16;
+        }
+
+        .message.success {
+            color: #11765E;
+            background: #E2F7EF;
+            border-color: #B7E9D7;
+        }
+
+        .field input:focus,
+        .field select:focus,
+        .field textarea:focus,
+        .search-input:focus,
+        .filter-select:focus {
+            outline: 3px solid rgba(117, 88, 232, .14);
+            border-color: #9A86F3;
+        }
+
+        /* Ownership page: richer light-mode treatment */
+        #ownership .notice {
+            background: linear-gradient(110deg, #FFF4D9, #FFF9ED 62%, #F2EDFF);
+            border: 1px solid #F1DDA8;
+            border-left: 5px solid #D9A441;
+            color: #80561A;
+            box-shadow: 0 8px 22px rgba(117, 88, 232, .05);
+        }
+
+        #ownership .empty-panel {
+            position: relative;
+            overflow: hidden;
+            padding: 0;
+            border: 1px solid #E6E0FA;
+            background: linear-gradient(135deg, #FFFFFF 0%, #FFFFFF 68%, #F5F1FF 100%);
+        }
+
+        #ownership .empty-panel>h3 {
+            margin: 0;
+            padding: 25px 30px 8px;
+            font-size: 22px;
+        }
+
+        #ownership .empty-panel>p:not(.inline-note) {
+            margin: 0;
+            padding: 0 30px 22px;
+            color: #777392;
+        }
+
+        #ownership .empty-panel>h3:before {
+            content: '↗';
+            display: inline-grid;
+            place-items: center;
+            width: 38px;
+            height: 38px;
+            margin-right: 12px;
+            border-radius: 12px;
+            color: #fff;
+            background: linear-gradient(135deg, #7558E8, #A18AFB);
+            box-shadow: 0 6px 14px #7558E833;
+            vertical-align: middle;
+        }
+
+        #ownership .empty-panel:before {
+            content: '';
+            display: block;
+            height: 6px;
+            background: linear-gradient(90deg, #7558E8 0%, #A18AFB 36%, #28B7B0 68%, #F0B84B 100%);
+        }
+
+        #ownership #contractForm,
+        #ownership #ownerForm {
+            margin: 0 30px;
+            padding: 23px;
+            border: 1px solid #E8E2FC;
+            border-radius: 18px;
+            background: linear-gradient(135deg, #F9F7FF, #FFFFFF 65%, #F2FBFB);
+            box-sizing: border-box;
+        }
+
+        #ownership .form-grid {
+            gap: 18px;
+            margin: 0 0 22px;
+        }
+
+        #ownership .field {
+            color: var(--muted);
+            font-size: 12px;
+            font-weight: 400;
+        }
+
+        #ownership .field input,
+        #ownership .field select {
+            min-height: 48px;
+            border: 1px solid #DFD9F5;
+            border-radius: 11px;
+            background: #fff;
+            box-shadow: 0 2px 5px rgba(47, 38, 95, .025);
+            transition: border-color .18s, box-shadow .18s, transform .18s;
+        }
+
+        #ownership .field input:hover,
+        #ownership .field select:hover {
+            border-color: #B8A8F6;
+        }
+
+        #ownership .field input:focus,
+        #ownership .field select:focus {
+            outline: 3px solid #7558E81F;
+            border-color: #8A70F0;
+            box-shadow: 0 0 0 4px #7558E80D;
+        }
+
+        #ownership #contractAmount {
+            background: #F4F0FF;
+            border-color: #D6CBFF;
+            font-weight: 700;
+        }
+
+        #ownership #paymentMode {
+            background: #F0FBFA;
+            border-color: #C8ECE8;
+        }
+
+        #ownership #contractForm .primary-btn {
+            min-height: 48px;
+            padding: 0 22px;
+            background: linear-gradient(105deg, #6D4DE0, #8B65F2 65%, #A18AFB);
+            box-shadow: 0 8px 18px #7558E833;
+        }
+
+        #ownership #contractForm .primary-btn:after {
+            content: ' →';
+            font-size: 17px;
+        }
+
+        #ownership .inline-note {
+            margin: 14px 30px 25px;
+            padding: 12px 14px;
+            border-radius: 10px;
+            background: #F1EEFF;
+            color: #65558E;
+            border-left: 3px solid #9278EF;
+        }
+
+        #ownership .message {
+            margin: 16px 30px 0;
+        }
+
+        #ownership .panel {
+            border-color: #E4DFFA;
+        }
+
+        #ownership .panel-head {
+            background: linear-gradient(100deg, #F4F0FF, #F0FBFA);
+        }
+
+        #ownership .panel-head h3:before {
+            content: '▦';
+            color: #7558E8;
+            margin-right: 9px;
+        }
+
+        #ownership .compact-table th {
+            background: #F4F0FF;
+            color: #65558E;
+        }
+
+        #ownership .compact-table tbody tr:nth-child(even) {
+            background: #FBFAFF;
+        }
+
+        @media(max-width:700px) {
+            #ownership .empty-panel>h3 {
+                padding: 20px 18px 8px;
+            }
+
+            #ownership .empty-panel>p:not(.inline-note) {
+                padding: 0 18px 18px;
+            }
+
+            #ownership #contractForm,
+            #ownership #ownerForm {
+                margin: 0 14px;
+                padding: 15px;
+            }
+
+            #ownership .inline-note {
+                margin: 14px;
+            }
+        }
+
+        @media(max-width:700px) {
+            #dashboard>.page-heading {
+                padding: 22px;
+            }
+        }
+
+        .ownership-style {
+            position: relative;
+            border: 1px solid #E4DFFA;
+            border-radius: 22px;
+            background: #fff;
+            overflow: hidden;
+        }
+
+        .ownership-style::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 8px;
+            background: linear-gradient(105deg,
+                    #7954F5 0%,
+                    #9A83F8 35%,
+                    #20BDB0 68%,
+                    #F2B847 100%);
+        }
+
+        .registered-users-panel {
+            border-color: #E4DFFA;
+        }
+
+        .registered-users-panel .panel-head {
+            background: linear-gradient(100deg, #F4F0FF, #F0FBFA);
+        }
+
+        .message.error,
+        .message.warning,
+        .notice.error,
+        .notice.warning {
+            color: #B4233D !important;
+            background: #FDEAF0 !important;
+            border: 1px solid #F3B8C5 !important;
+            border-radius: 10px;
+            padding: 12px 14px;
+        }
+
+        /* Patent description popup */
+        .notice-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.55);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .notice-modal-content {
+            background: #ffffff;
+            width: 100%;
+            max-width: 500px;
+            padding: 25px;
+            border-radius: 14px;
+            box-shadow: 0 10px 35px rgba(0, 0, 0, 0.25);
+        }
+
+        .notice-modal-content h3 {
+            margin-top: 0;
+            color: #1e293b;
+        }
+
+        .notice-modal-message {
+            white-space: pre-wrap;
+            overflow-wrap: anywhere;
+            line-height: 1.6;
+            color: #475569;
+            margin: 15px 0 20px;
+        }
+
+        .notice-modal-content button {
+            display: block;
+            margin-left: auto;
+            padding: 9px 22px;
+            border: none;
+            border-radius: 7px;
+            background: #2563eb;
+            color: white;
+            cursor: pointer;
+        }
+
+        /* Consistent spacing for all six report outputs */
+        [id$="ButtonReport"] {
+            padding: 24px;
+            margin-top: 20px;
+            overflow-x: auto;
+        }
+
+        [id$="ButtonReport"] h3 {
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        [id$="ButtonReport"] table {
+            width: 100%;
+            border-collapse: collapse;
+            table-layout: auto;
+        }
+
+        [id$="ButtonReport"] th,
+        [id$="ButtonReport"] td {
+            padding: 14px 20px;
+            text-align: left;
+            line-height: 1.6;
+            vertical-align: middle;
+        }
+
+        [id$="ButtonReport"] th {
+            font-weight: 600;
+        }
+
+        [id$="ButtonReport"] tbody tr {
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        /* Consistent title alignment across all report outputs */
+        [id*="Report"] h3 {
+            display: block !important;
+            width: 100% !important;
+            box-sizing: border-box !important;
+            margin: 0 0 20px 0 !important;
+            padding: 0 20px !important;
+            text-align: left !important;
+            line-height: 1.6 !important;
+        }
+
+        /* Keep report tables aligned consistently */
+        [id*="Report"] table {
+            width: 100% !important;
+            margin: 0 !important;
+            border-collapse: collapse !important;
+        }
+
+        .edit-status-btn {
+            background: #e8f1ff;
+            color: #315f9e;
+            border: 1px solid #c9dcfa;
+        }
+
+        .edit-status-btn:hover {
+            background: #d8e8ff;
+        }
+
+        /* Unified styling for all six report panels */
+        #patentStatusButtonReport,
+        #paymentTypeReport,
+        #contractAmountReport,
+        #activeContractsReport,
+        #multipleContractsReport,
+        #totalPerPatentReport {
+            padding: 0 !important;
+            margin-top: 18px;
+            overflow-x: auto;
+        }
+
+        /* Unified report headings */
+        #patentStatusButtonReport h3,
+        #paymentTypeReport h3,
+        #contractAmountReport h3,
+        #activeContractsReport h3,
+        #multipleContractsReport h3,
+        #totalPerPatentReport h3 {
+            margin: 0 !important;
+            padding: 24px 30px !important;
+            text-align: left;
+            line-height: 1.5;
+        }
+
+        /* Unified table dimensions */
+        #patentStatusButtonReport table,
+        #paymentTypeReport table,
+        #contractAmountReport table,
+        #activeContractsReport table,
+        #multipleContractsReport table,
+        #totalPerPatentReport table {
+            width: 100% !important;
+            margin: 0 !important;
+            border-collapse: collapse;
+            table-layout: auto;
+        }
+
+        /* Unified headers and cells */
+        #patentStatusButtonReport th,
+        #patentStatusButtonReport td,
+        #paymentTypeReport th,
+        #paymentTypeReport td,
+        #contractAmountReport th,
+        #contractAmountReport td,
+        #activeContractsReport th,
+        #activeContractsReport td,
+        #multipleContractsReport th,
+        #multipleContractsReport td,
+        #totalPerPatentReport th,
+        #totalPerPatentReport td {
+            padding: 10px 30px !important;
+            text-align: left;
+            vertical-align: middle;
+            line-height: 1.6;
+        }
+
+        /* Unified table header */
+        #patentStatusButtonReport th,
+        #paymentTypeReport th,
+        #contractAmountReport th,
+        #activeContractsReport th,
+        #multipleContractsReport th,
+        #totalPerPatentReport th {
+            font-weight: 600;
+        }
+
+        /* Unified row separators */
+        #patentStatusButtonReport tbody tr,
+        #paymentTypeReport tbody tr,
+        #contractAmountReport tbody tr,
+        #activeContractsReport tbody tr,
+        #multipleContractsReport tbody tr,
+        #totalPerPatentReport tbody tr {
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .message.error {
+            display: block;
+            color: #C04468;
+            background: #FDEAF0;
+            border: 1px solid #F5B8C8;
+            border-radius: 14px;
+            padding: 18px 20px;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .message.success {
+            display: block;
+            color: #16866D;
+            background: #E2F7EF;
+            border: 1px solid #A9DFC9;
+            border-radius: 14px;
+            padding: 18px 20px;
+            font-size: 12px;
+        }
+
+        /* Subtle gradient for the duration calculator toolbar only */
+        #reports .toolbar:has(#durationPatentId) {
+            background: linear-gradient(110deg, #F2EEFF, #E8E0FF);
+            border-radius: 12px;
+            padding: 12px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="noticeModal" class="notice-modal">
+        <div class="notice-modal-content">
+            <h3 id="noticeModalTitle"></h3>
+            <div id="noticeModalMessage" class="notice-modal-message"></div>
+            <button type="button" onclick="closeNotice()">Close</button>
+        </div>
+    </div>
+    <div class="app">
+        <aside>
+            <div class="brand">
+                <div class="brand-mark" aria-label="PatentVault logo" role="img"><svg viewBox="0 0 32 32" fill="none"
+                        aria-hidden="true">
+                        <path d="M9 4.75h10l5 5V18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        <path d="M19 4.75v5h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                        <path d="M9 4.75H7.5A2.5 2.5 0 0 0 5 7.25v18A2.5 2.5 0 0 0 7.5 27.75h9" stroke="currentColor"
+                            stroke-width="1.8" stroke-linecap="round" />
+                        <path d="M10 13h8M10 17h6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                        <path d="m21.5 17.5 6 2.3v4.1c0 3.1-2.3 5.2-6 6.6-3.7-1.4-6-3.5-6-6.6v-4.1l6-2.3Z"
+                            fill="#DCD3FF" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" />
+                        <path d="m18.9 23.6 1.8 1.8 3.6-3.9" stroke="#5E45D2" stroke-width="1.7" stroke-linecap="round"
+                            stroke-linejoin="round" />
+                    </svg></div>
+                <div>
+                    <h1>PatentVault</h1>
+                    <p>Patent Management System</p>
+                </div>
+            </div>
+            <div>
+                <div class="nav-label">WORKSPACE</div>
+                <nav aria-label="Main navigation">
+                    <button class="nav-btn active" data-page="dashboard"><span class="nav-icon">⌂</span>
+                        Dashboard</button>
+                    <button class="nav-btn" data-page="patents"><span class="nav-icon">▤</span> Patents</button>
+                    <button class="nav-btn" data-page="users"><span class="nav-icon">♙</span> Users & Creators</button>
+                    <button class="nav-btn" data-page="ownership"><span class="nav-icon">⇄</span> Ownership &
+                        Contracts</button>
+                    <button class="nav-btn" data-page="reports"><span class="nav-icon">▥</span> Reports</button>
+                </nav>
+            </div>
+        </aside>
+        <main>
+            <header>
+                <div class="crumb">Workspace &nbsp;/&nbsp; <strong id="breadcrumb">Dashboard</strong></div>
+            </header>
+            <div class="content">
+                <section class="section-page active" id="dashboard">
+                    <div class="page-heading">
+                        <div>
+                            <h2>Dashboard</h2>
+                            <p>Overview of patent records and ownership activity.</p>
+                        </div><button class="primary-btn" onclick="showPage('patents')">＋ &nbsp; Explore
+                            patents</button>
+                    </div>
+                    <div class="stats">
+                        <article class="stat-card">
+                            <div class="stat-top"><span class="stat-label">Total patents</span><span
+                                    class="stat-icon">▤</span></div>
+                            <div class="stat-value" id="patentCount">4</div>
+                            <div class="stat-foot">Database records</div>
+                        </article>
+                        <article class="stat-card">
+                            <div class="stat-top"><span class="stat-label">Granted patents</span><span
+                                    class="stat-icon">✓</span></div>
+                            <div class="stat-value" id="grantedCount">2</div>
+                            <div class="stat-foot">Database records</div>
+                        </article>
+                        <article class="stat-card">
+                            <div class="stat-top"><span class="stat-label">Registered users</span><span
+                                    class="stat-icon">♙</span></div>
+                            <div class="stat-value" id="userCount">4</div>
+                            <div class="stat-foot">Database records</div>
+                        </article>
+                        <article class="stat-card">
+                            <div class="stat-top"><span class="stat-label">Ownership contracts</span><span
+                                    class="stat-icon">⇄</span></div>
+                            <div class="stat-value" id="contractCount">2</div>
+                            <div class="stat-foot">Database records</div>
+                        </article>
+                    </div>
+                    <div class="main-grid">
+                        <section class="panel">
+                            <div class="panel-head">
+                                <div>
+                                    <h3>Recent patents</h3>
+                                    <p>Click a patent title to read its description</p>
+                                </div><button class="text-btn" onclick="showPage('patents')">View all →</button>
+                            </div>
+                            <div class="table-wrap">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>PATENT ID</th>
+                                            <th>TITLE</th>
+                                            <th>CREATED</th>
+                                            <th>STATUS</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="recentPatentRows"></tbody>
+                                </table>
+                            </div>
+                        </section>
+                        <section class="panel">
+                            <div class="panel-head">
+                                <div>
+                                    <h3>Quick actions</h3>
+                                    <p>Common tasks</p>
+                                </div>
+                            </div>
+                            <div class="quick-list">
+                                <button class="quick-item" style="width:100%;background:none;border:0;text-align:left"
+                                    onclick="showPage('patents'); document.getElementById('patentTitleInput').focus()"><span
+                                        class="quick-icon">＋</span><span class="quick-copy"><strong>Register a
+                                            patent</strong><span>Add a patent record and description</span></span><span
+                                        class="arrow">›</span></button>
+                                <button class="quick-item" style="width:100%;background:none;border:0;text-align:left"
+                                    onclick="showPage('users')"><span class="quick-icon">♙</span><span
+                                        class="quick-copy"><strong>Register a user</strong><span>Add a user and view
+                                            collaborators</span></span><span class="arrow">›</span></button>
+                                <button class="quick-item" style="width:100%;background:none;border:0;text-align:left"
+                                    onclick="showPage('ownership')"><span class="quick-icon">⇄</span><span
+                                        class="quick-copy"><strong>Create ownership contract</strong><span>Enter
+                                            contract amount and payment mode</span></span><span
+                                        class="arrow">›</span></button>
+                            </div>
+                        </section>
+                    </div>
+                </section>
+
+                <section class="section-page" id="patents">
+                    <div class="page-heading">
+                        <div>
+                            <h2>Patents</h2>
+                            <p>Register patents, search records, view descriptions and edit status.</p>
+                        </div>
+                    </div>
+
+                    <div class="empty-panel ownership-style" style="margin-bottom:18px">
+                        <h3>Register a patent</h3>
+                        <form id="patentForm">
+                            <div class="form-grid">
+                                <label class="field">Patent ID<input id="patentIdInput" type="number" min="1" required
+                                        placeholder="e.g. 101"></label>
+                                <label class="field">Title<input id="patentTitleInput" required maxlength="200"
+                                        placeholder="Patent title should be within 200 characters"></label>
+                                <label class="field full-width">Description<textarea id="patentDescriptionInput"
+                                        maxlength="500"
+                                        placeholder="Describe the invention in not more than 500 characters"></textarea></label>
+                                <label class="field">Status<select id="patentStatusInput">
+                                        <option>Pending</option>
+                                        <option>Granted</option>
+                                    </select></label>
+                            </div><button class="primary-btn" type="submit">＋ Register patent</button>
+                        </form>
+                        <div class="message" id="patentMessage" role="status"
+                            style="display:none; margin-top:12px; padding:12px; border-radius:8px; font-weight:600;">
+                        </div>
+                    </div>
+                    <div class="toolbar"><input class="search-input" id="patentSearch"
+                            placeholder="Search by patent title or ID…" aria-label="Search patents"><select
+                            class="filter-select" id="statusFilter" aria-label="Filter by status">
+                            <option value="">All statuses</option>
+                            <option>Granted</option>
+                            <option>Pending</option>
+                            <option>Terminated</option>
+                        </select></div>
+                    <div class="panel table-wrap">
+                        <table id="patentTable">
+                            <thead>
+                                <tr>
+                                    <th>PATENT ID</th>
+                                    <th>TITLE (CLICK FOR DESCRIPTION)</th>
+                                    <th>STATUS</th>
+                                    <th>CREATED AT</th>
+                                    <th>ACTION</th>
+                                </tr>
+                            </thead>
+                            <tbody id="patentRows"></tbody>
+                        </table>
+                        <div style="text-align:center; padding:15px;" id="patentsLoadMoreContainer">
+                            <button class="primary-btn" onclick="loadAllPatents()">Load More</button>
+                        </div>
+                    </div>
+
+                </section>
+
+                <section class="section-page" id="users">
+                    <div class="page-heading">
+                        <div>
+                            <h2>Users & Creators</h2>
+                            <p>Register users and view which users collaborate on each patent.</p>
+                        </div>
+                    </div>
+                    <div class="empty-panel ownership-style" style="margin-bottom:18px">
+                        <h3>Register a user</h3>
+                        <form id="userForm">
+                            <div class="form-grid">
+                                <label class="field">User ID<input id="userIdInput" type="number" min="1" required
+                                        placeholder="e.g. 201"></label>
+                                <label class="field">Name<input id="userNameInput" required maxlength="50"
+                                        placeholder="Full name"></label>
+                                <label class="field">Email<input id="userEmailInput" type="email" maxlength="50"
+                                        placeholder="name@example.com"></label>
+                                <label class="field">Phone<input id="userPhoneInput" type="tel" maxlength="10"
+                                        pattern="[0-9]{10}" placeholder="10-digit phone number"></label>
+                                <label class="field full-width">Address<input id="userAddressInput" maxlength="150"
+                                        placeholder="Address (optional)"></label>
+                            </div><button class="primary-btn" type="submit">＋ Register user</button>
+                        </form>
+                        <div class="message" id="userMessage" role="status"></div>
+                    </div>
+
+
+                    <div class="empty-panel ownership-style" style="margin-bottom:18px">
+                        <h3>Assign a Collaborator to a Patent</h3>
+                        <form id="assignCollaboratorForm">
+                            <div class="form-grid">
+                                <label class="field">
+                                    Patent ID
+                                    <input id="collaboratorPatentId" type="number" min="1" required
+                                        placeholder="Enter Patent ID">
+                                </label>
+
+                                <label class="field">
+                                    User ID
+                                    <input id="collaboratorUserId" type="number" min="1" required
+                                        placeholder="Enter User ID">
+                                </label>
+                            </div>
+
+                            <button class="primary-btn" type="submit">
+                                Assign Collaborator
+                            </button>
+                        </form>
+
+                        <div class="message" id="assignCollaboratorMessage" role="status"></div>
+                    </div>
+
+
+                    <section class="panel registered-users-panel" style="margin-bottom:18px">
+                        <div class="panel-head">
+                            <div style="display:flex;align-items:center;gap:10px;">♙ <h3 style="margin:0;">Registered
+                                    users</h3>
+                            </div>
+                        </div>
+                        <div class="table-wrap">
+                            <table class="compact-table">
+                                <thead>
+                                    <tr>
+                                        <th>USER ID</th>
+                                        <th>NAME</th>
+                                        <th>EMAIL</th>
+                                        <th>PHONE</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="userRows"></tbody>
+                            </table>
+                            <div style="text-align:center; padding:15px;" id="usersLoadMoreContainer">
+                                <button class="primary-btn" onclick="loadAllUsers()">Load More</button>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="panel">
+                        <div class="panel-head">
+                            <div>
+                                <h3>Patent collaborators</h3>
+                                <p>ListPatentCollaborators() belongs in Users & Creators</p>
+                            </div><button class="primary-btn" onclick="showCollaborators()">List collaborators</button>
+                        </div>
+                        <div class="table-wrap">
+                            <table class="compact-table">
+                                <thead>
+                                    <tr>
+                                        <th>PATENT ID</th>
+                                        <th>PATENT NAME</th>
+                                        <th>COLLABORATORS</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="collaboratorRows"></tbody>
+                            </table>
+                        </div>
+                        <div class="inline-note" style="padding:0 18px 18px"></div>
+                    </section>
+                </section>
+
+                <section class="section-page" id="ownership">
+                    <div class="page-heading">
+                        <div>
+                            <h2>Ownership & Contracts</h2>
+                            <p>Create an ownership contract and record its payment details.</p>
+                        </div>
+                    </div>
+                    <div class="notice">Start date defaults to today's date (the equivalent of <code>SYSDATE</code>) if
+                        left blank.</div>
+                    <div class="empty-panel" style="padding-bottom: 36px; margin-bottom: 20px;">
+                        <h3>Register an Owner</h3>
+                        <p>Enter the Owner ID and owner's name to register a new owner.</p>
+
+                        <form id="ownerForm">
+                            <div class="form-grid">
+                                <label class="field">
+                                    Owner ID
+                                    <input type="number" id="ownerIdInput" placeholder="Enter Owner ID" required>
+                                </label>
+
+                                <label class="field">
+                                    Owner Name
+                                    <input type="text" id="ownerNameInput" placeholder="Enter Owner Name" required>
+                                </label>
+                            </div>
+
+                            <button type="submit" class="primary-btn">Register Owner</button>
+                            <div id="ownerMessage" class="message" style="display:none;"></div>
+                        </form>
+                    </div>
+                    <div class="empty-panel" style="padding-bottom: 36px;">
+                        <h3>New ownership contract</h3>
+                        <p>Choose a patent and an owner, enter the amount, then select the payment mode.</p>
+                        <form id="contractForm">
+                            <div class="form-grid">
+                                <label class="field">Patent<select id="contractPatentId" required></select></label>
+
+                                <label class="field">Owner / Company
+                                    <select id="contractOwnerId" required>
+                                        <option value="">Loading companies...</option>
+                                    </select>
+                                </label>
+                                <label class="field">Start date<input id="contractStart" type="date"></label>
+                                <label class="field">End date<input id="contractEnd" type="date"></label>
+                                <label class="field">Amount (₹)<input id="contractAmount" type="number" min="1"
+                                        step="0.01" required placeholder="Enter amount"></label>
+                                <label class="field">Payment mode<select id="paymentMode" required>
+                                        <option value="">Select payment mode</option>
+                                        <option>UPI</option>
+                                        <option>Cheque</option>
+                                        <option>Net Banking</option>
+                                    </select></label>
+                            </div><button class="primary-btn" type="submit">Confirm purchase / save contract</button>
+                        </form>
+                        <div class="message" id="contractMessage" role="status"></div>
+                    </div>
+                    <section class="panel" style="margin-top:18px">
+                        <div class="panel-head">
+                            <div>
+                                <h3>Recent contracts</h3>
+                            </div>
+                        </div>
+                        <div class="table-wrap">
+                            <table class="compact-table">
+                                <thead>
+                                    <tr>
+                                        <th>PATENT</th>
+                                        <th>OWNER</th>
+                                        <th>START DATE</th>
+                                        <th>END DATE</th>
+                                        <th>AMOUNT</th>
+                                        <th>PAYMENT MODE</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="contractRows"></tbody>
+                            </table>
+                            <div style="text-align:center; padding:15px;" id="contractsLoadMoreContainer">
+                                <button class="primary-btn" onclick="loadAllContracts()">Load More</button>
+                            </div>
+                        </div>
+                    </section>
+                </section>
+
+                <section class="section-page" id="reports">
+                    <div class="page-heading">
+                        <div>
+                            <h2>Reports</h2>
+                            <p>Provides a quick overview of the current status of registered patents.</p>
+                        </div>
+                    </div>
+
+                    <div class="report-grid">
+
+                        <article class="report-card">
+                            <h4>1. Patent status summary</h4>
+                            <p>Counts patents by status.</p>
+                            <button class="secondary-btn" onclick="loadPatentStatusReport()">View</button>
+                        </article>
+
+
+                        <article class="report-card">
+                            <h4>2. Payment Mode Summary</h4>
+                            <p>Displays the number of contracts for each payment type.</p>
+                            <button class="secondary-btn" onclick="loadPaymentTypeReport()">View</button>
+                        </article>
+
+                        <article class="report-card">
+                            <h4>3. Total contract amount by company</h4>
+                            <p>Shows the sum of ownership amounts for each company.</p>
+                            <button class="secondary-btn" onclick="loadContractAmountReport()">View</button>
+                        </article>
+
+                        <article class="report-card">
+                            <h4>4. Active ownership contracts</h4>
+                            <p>Lists ownership contracts active today.</p>
+                            <button class="secondary-btn" onclick="loadActiveContractsReport()">View</button>
+                        </article>
+
+
+                        <article class="report-card">
+                            <h4>5. Patents with multiple contracts</h4>
+                            <p>Shows patents linked to multiple ownership contracts.</p>
+                            <button class="secondary-btn" onclick="loadMultipleContractsReport()">View</button>
+                        </article>
+
+
+                        <article class="report-card">
+                            <h4>6. Total amount per patent</h4>
+                            <p>Shows the total ownership amount associated with each patent.</p>
+                            <button class="secondary-btn" onclick="loadTotalPerPatentReport()">View</button>
+                        </article>
+
+                    </div>
+                    <div class="empty-panel" style="margin-top:18px">
+                        <h3>Contract Duration Calculator</h3>
+                        <p>Uses the SQL function, which returns duration in days.</p>
+                        <div class="toolbar">
+                            <select class="search-input" id="durationPatentId" aria-label="Patent for duration"
+                                onchange="loadDurationOwners()"></select>
+                            <select class="search-input" id="durationOwnerId" aria-label="Owner for duration">
+                                <option value="">Select owner</option>
+                            </select> <button class="primary-btn" onclick="calculateDuration()">Calculate
+                                duration</button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+    <script>
+        const pageTitles = { dashboard: 'Dashboard', patents: 'Patents', users: 'Users & Creators', ownership: 'Ownership & Contracts', reports: 'Reports' };
+        let patents = [];
+        let users = [];
+        let collaborators = {};
+        let showAllPatents = false;
+        let showAllUsers = false;
+        let showAllContracts = false;
+
+        const INITIAL_RECORD_LIMIT = 15;
+
+        const contracts = [
+            { patentId: 101, ownerId: 1, start: '2026-10-12', end: '2027-10-12', amount: 125000, mode: 'UPI' },
+            { patentId: 104, ownerId: 3, start: '2026-10-17', end: '2028-10-17', amount: 186000, mode: 'Net Banking' }
+        ];
+        const owners = { 1: 'Innovate Systems', 2: 'GreenTech Labs', 3: 'VoltEdge Technologies' };
+        function showPage(pageId) {
+            document.querySelectorAll('.section-page').forEach(section => section.classList.toggle('active', section.id === pageId));
+            document.querySelectorAll('.nav-btn').forEach(button => button.classList.toggle('active', button.dataset.page === pageId));
+            document.getElementById('breadcrumb').textContent = pageTitles[pageId] || 'Dashboard';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        document.querySelectorAll('.nav-btn').forEach(button => button.addEventListener('click', () => showPage(button.dataset.page)));
+        function showNotice(title, message) {
+            document.getElementById('noticeModalTitle').textContent = title;
+            document.getElementById('noticeModalMessage').textContent = message;
+            document.getElementById('noticeModal').style.display = 'flex';
+        }
+
+        function closeNotice() {
+            document.getElementById('noticeModal').style.display = 'none';
+        }
+        function statusClass(status) { return status.toLowerCase(); }
+        function safeText(value) { return String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+        function showMessage(id, text, kind = 'success') { const el = document.getElementById(id); el.textContent = text; el.className = 'message show ' + kind; }
+
+        async function loadDurationOwners() {
+            const patentId = document.getElementById('durationPatentId').value;
+            const ownerSelect = document.getElementById('durationOwnerId');
+
+            ownerSelect.innerHTML = '<option value="">Select owner</option>';
+
+            if (!patentId) return;
+
+            try {
+                const response = await fetch(
+                    `/api/owners?patentId=${encodeURIComponent(patentId)}`
+                );
+
+                const owners = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(owners.error || 'Could not load owners.');
+                }
+
+                owners.forEach(owner => {
+                    const option = document.createElement('option');
+                    option.value = owner.ownerId;
+                    option.textContent = owner.ownerName;
+                    ownerSelect.appendChild(option);
+                });
+
+            } catch (error) {
+                showNotice('Error', error.message);
+            }
+        }
+
+        async function loadPatentsFromDatabase() {
+            try {
+                const response = await fetch('/api/patents');
+
+                if (!response.ok) {
+                    throw new Error('Failed to load patents');
+                }
+
+                const data = await response.json();
+
+                patents = data.map(p => ({
+                    id: p.patentId,
+                    title: p.title,
+                    description: p.description,
+                    status: p.status,
+                    createdAt: p.createdAt
+                }));
+
+                renderPatents();
+                console.log('Live patents loaded:', patents);
+            } catch (error) {
+                console.error('Patent loading error:', error);
+            }
+        }
+        function renderPatents() {
+            const contractOpts = patents
+                .filter(p => (p.status || '').toLowerCase() !== 'terminated')
+                .map(p => `<option value="${p.id}">${p.id} — ${safeText(p.title)}</option>`)
+                .join('');
+
+            const allPatentOpts = patents
+                .map(p => `<option value="${p.id}">${p.id} — ${safeText(p.title)}</option>`)
+                .join('');
+
+            document.getElementById('contractPatentId').innerHTML =
+                '<option value="">Select patent</option>' + contractOpts;
+
+            document.getElementById('durationPatentId').innerHTML =
+                '<option value="">Select patent</option>' + allPatentOpts;
+
+            document.getElementById('patentCount').textContent = patents.length;
+            document.getElementById('grantedCount').textContent =
+                patents.filter(p => p.status === 'Granted').length;
+
+            document.getElementById('recentPatentRows').innerHTML =
+                patents.slice(-4).reverse().map(p =>
+                    `<tr>
+                <td>${p.id}</td>
+                <td><button class="click-title" onclick="showPatentDescription(${p.id})">${safeText(p.title)}</button></td>
+                <td>${p.createdAt}</td>
+                <td><span class="status ${statusClass(p.status)}">${p.status}</span></td>
+            </tr>`
+                ).join('');
+
+            filterPatents();
+        }
+
+        function filterPatents() {
+            const search = (document.getElementById('patentSearch')?.value || '').toLowerCase();
+            const status = (document.getElementById('statusFilter')?.value || '').toLowerCase();
+
+            const filteredPatents = patents.filter(p => {
+                const matchesSearch =
+                    String(p.id).toLowerCase().includes(search) ||
+                    (p.title || '').toLowerCase().includes(search);
+
+                const matchesStatus =
+                    !status || (p.status || '').toLowerCase() === status;
+
+                return matchesSearch && matchesStatus;
+            });
+
+            const visiblePatents = showAllPatents
+                ? filteredPatents
+                : filteredPatents.slice(0, INITIAL_RECORD_LIMIT);
+
+            document.getElementById('patentRows').innerHTML = visiblePatents.map(p =>
+                `<tr>
+            <td>${p.id}</td>
+            <td><button class="click-title" onclick="showPatentDescription(${p.id})">${safeText(p.title)}</button></td>
+            <td><span class="status ${statusClass(p.status)}">${p.status}</span></td>
+            <td>${p.createdAt}</td>
+            <td>
+                <button class="secondary-btn edit-status-btn" onclick="editPatentStatus(${p.id})">Edit status</button>
+            </td>
+        </tr>`
+            ).join('');
+
+            document.getElementById('patentsLoadMoreContainer').style.display =
+                !showAllPatents && filteredPatents.length > INITIAL_RECORD_LIMIT
+                    ? 'block'
+                    : 'none';
+        }
+
+        function loadAllPatents() {
+            showAllPatents = true;
+            filterPatents();
+        }
+        function showPatentDescription(id) { const p = patents.find(x => x.id === id); if (p) showNotice(p.title, 'Patent ID: ' + p.id + '\nStatus: ' + p.status + '\nCreated At: ' + p.createdAt + '\n\nDescription: ' + (p.description || 'No description provided.')); }
+
+
+        document.getElementById('assignCollaboratorForm')
+            .addEventListener('submit', async function (event) {
+                event.preventDefault();
+
+                const patentId = Number(
+                    document.getElementById('collaboratorPatentId').value
+                );
+                const userId = Number(
+                    document.getElementById('collaboratorUserId').value
+                );
+
+                try {
+                    const response = await fetch('/api/collaborators/assign', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ patentId, userId })
+                    });
+
+                    const data = await response.json();
+
+                    if (!response.ok) {
+                        throw new Error(data.error || 'Assignment failed.');
+                    }
+
+                    showMessage(
+                        'assignCollaboratorMessage',
+                        data.message || 'Collaborator assigned successfully.',
+                        'success'
+                    );
+
+                    this.reset();
+
+                } catch (error) {
+                    showMessage(
+                        'assignCollaboratorMessage',
+                        error.message,
+                        'error'
+                    );
+                }
+            });
+
+        async function editPatentStatus(id) {
+            const p = patents.find(x => x.id === id);
+            if (!p) return;
+
+            const next = prompt(
+                'Enter new status for ' + p.title +
+                ' (Pending, Granted, Terminated):',
+                p.status
+            );
+
+            if (next === null) return;
+
+            const valid = {
+                pending: 'Pending',
+                granted: 'Granted',
+                terminated: 'Terminated'
+            };
+
+            const newStatus = valid[next.trim().toLowerCase()];
+
+            if (!newStatus) {
+                alert('Choose Pending, Granted or Terminated.');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/patents/status', {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        patentId: id,
+                        status: newStatus
+                    })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.error || 'Could not update status.');
+                }
+
+                alert(result.message || 'Patent status updated successfully!');
+                await loadPatentsFromDatabase();
+                await loadDashboardStats();
+
+            } catch (error) {
+                alert('Status update failed: ' + error.message);
+            }
+        }
+
+        document.getElementById('patentSearch').addEventListener('input', filterPatents); document.getElementById('statusFilter').addEventListener('change', filterPatents);
+
+        document.getElementById('patentForm').addEventListener('submit', async e => {
+            e.preventDefault();
+
+            const id = Number(document.getElementById('patentIdInput').value);
+            const title = document.getElementById('patentTitleInput').value.trim();
+            const description = document.getElementById('patentDescriptionInput').value.trim();
+            const status = document.getElementById('patentStatusInput').value;
+            const message = document.getElementById('patentMessage');
+
+            try {
+                const response = await fetch('/api/patents', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        patentId: id,
+                        title: title,
+                        description: description,
+                        status: status
+                    })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.error || 'Could not register patent.');
+                }
+
+                message.textContent = '✓ Patent registered successfully!';
+                message.style.display = 'block';
+                message.style.color = '#087443';
+                message.style.backgroundColor = '#e3f8ed';
+
+                e.target.reset();
+                await loadPatentsFromDatabase();
+                await loadDashboardStats();
+
+            } catch (error) {
+                message.textContent = error.message;
+                message.style.display = 'block';
+                message.style.color = 'red';
+                message.style.backgroundColor = '#FDEAF0';
+                message.style.border = '1px solid #F3B8C5';
+            }
+        });
+
+        function renderUsers() {
+    const visibleUsers = showAllUsers
+        ? users
+        : users.slice(0, INITIAL_RECORD_LIMIT);
+
+    document.getElementById('userRows').innerHTML = visibleUsers.map(u =>
+        `<tr>
+            <td>${u.userId ?? u.id}</td>
+            <td>${u.name}</td>
+            <td>${u.email}</td>
+            <td>${u.phone ?? ''}</td>
+        </tr>`
+    ).join('');
+
+    document.getElementById('usersLoadMoreContainer').style.display =
+        !showAllUsers && users.length > INITIAL_RECORD_LIMIT
+            ? 'block'
+            : 'none';
+}
+
+function loadAllUsers() {
+    showAllUsers = true;
+    renderUsers();
+}
+
+        async function loadUsersFromDatabase() {
+            try {
+                const response = await fetch('/api/users');
+
+                if (!response.ok) {
+                    throw new Error('Failed to load users');
+                }
+
+                users = await response.json();
+                renderUsers();
+
+            } catch (error) {
+                console.error('Error loading users:', error);
+            }
+        }
+
+
+        document.getElementById('userForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const user = {
+                id: Number(document.getElementById('userIdInput').value),
+                name: document.getElementById('userNameInput').value.trim(),
+                email: document.getElementById('userEmailInput').value.trim(),
+                phone: document.getElementById('userPhoneInput').value.trim(),
+                address: document.getElementById('userAddressInput').value.trim()
+            };
+
+            try {
+                const response = await fetch('/api/users', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(user)
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.error || 'User registration failed.');
+                }
+
+                await loadUsersFromDatabase();
+                await loadDashboardStats();
+
+                showMessage(
+                    'userMessage',
+                    result.message || 'User registered successfully.',
+                    'success'
+                );
+
+                this.reset();
+
+            } catch (error) {
+                showMessage('userMessage', error.message, 'error');
+            }
+        });
+
+        async function showCollaborators() {
+            const rows = document.getElementById('collaboratorRows');
+
+            try {
+                const response = await fetch('/api/collaborators');
+                if (!response.ok) throw new Error('Failed to load collaborators');
+
+                const data = await response.json();
+
+                rows.innerHTML = data.map(p => `
+            <tr>
+                <td>${p.patentId}</td>
+                <td>${p.patentName}</td>
+                <td>${p.collaborators || 'No collaborators listed'}</td>
+            </tr>
+        `).join('');
+            } catch (error) {
+                console.error('Error loading collaborators:', error);
+                rows.innerHTML = '<tr><td colspan="3">Could not load collaborators.</td></tr>';
+            }
+        }
+
+        let activeReportId = null;
+
+        function toggleReportVisibility(reportId) {
+
+            const reportIds = [
+                'patentStatusButtonReport',
+                'paymentTypeReport',
+                'contractAmountReport',
+                'activeContractsReport',
+                'multipleContractsReport',
+                'totalPerPatentReport'
+            ];
+
+            // Clicking the currently visible report hides it
+            if (activeReportId === reportId) {
+                const currentReport = document.getElementById(reportId);
+
+                if (currentReport) {
+                    currentReport.style.display = 'none';
+                }
+
+                activeReportId = null;
+                return false;
+            }
+
+            // Hide all other reports
+            reportIds.forEach(id => {
+                const report = document.getElementById(id);
+
+                if (report) {
+                    report.style.display = 'none';
+                }
+            });
+
+            // Show the selected report if it already exists
+            const selectedReport = document.getElementById(reportId);
+
+            if (selectedReport) {
+                selectedReport.style.display = 'block';
+            }
+
+            activeReportId = reportId;
+            return true;
+        }
+
+        async function loadPaymentTypeReport() {
+            if (!toggleReportVisibility('paymentTypeReport')) return;
+
+            let report = document.getElementById('paymentTypeReport');
+
+            if (!report) {
+                report = document.createElement('div');
+                report.id = 'paymentTypeReport';
+                report.className = 'panel';
+                report.style.marginTop = '18px';
+                document.querySelector('#reports .report-grid').after(report);
+            }
+
+            try {
+                const response = await fetch('/api/reports/payment-types');
+
+                if (!response.ok) {
+                    throw new Error('Failed to load payment mode summary');
+                }
+
+                const data = await response.json();
+
+                report.innerHTML = `
+            <h3>Payment Mode Summary</h3>
+            ${data.length ? `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Payment Type</th>
+                            <th>Number of Contracts</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.map(item => `
+                            <tr>
+                                <td>${item.payType || 'Not specified'}</td>
+                                <td>${item.contractCount}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            ` : '<p>No ownership contracts found.</p>'}
+        `;
+
+                report.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            } catch (error) {
+                console.error('Payment mode report error:', error);
+                report.textContent = 'Could not load the Payment Mode Summary.';
+            }
+        }
+
+        async function loadContractAmountReport() {
+            if (!toggleReportVisibility('contractAmountReport')) return;
+
+            try {
+                const response = await fetch('/api/reports/contract-amounts');
+
+                if (!response.ok) {
+                    throw new Error('Failed to load contract amounts');
+                }
+
+                const data = await response.json();
+
+                let output = document.getElementById('contractAmountReport');
+
+                if (!output) {
+                    output = document.createElement('div');
+                    output.id = 'contractAmountReport';
+                    output.className = 'panel';
+                    output.style.marginTop = '18px';
+
+                    document.querySelector('#reports .report-grid').after(output);
+                }
+
+                output.style.display = 'block';
+
+                output.innerHTML = `
+    <h3>Total Contract Amount by Company</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Company</th>
+                <th>Total Contract Amount</th>
+            </tr>
+        </thead>
+        <tbody>
+            ${data.map(item => `
+                <tr>
+                    <td>${item.company}</td>
+                    <td>₹${Number(item.totalAmount).toLocaleString('en-IN')}</td>
+                </tr>
+            `).join('')}
+        </tbody>
+    </table>
+`;
+
+                output.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+            } catch (error) {
+                console.error('Contract amount report error:', error);
+                alert('Could not load contract amounts. Check the Console.');
+            }
+        }
+
+        async function loadActiveContractsReport() {
+            if (!toggleReportVisibility('activeContractsReport')) return;
+            try {
+                const response = await fetch('/api/reports/active-contracts');
+                if (!response.ok) throw new Error('Failed to load active contracts');
+
+                const data = await response.json();
+
+                let output = document.getElementById('activeContractsReport');
+                if (!output) {
+                    output = document.createElement('div');
+                    output.id = 'activeContractsReport';
+                    output.className = 'panel';
+                    output.style.marginTop = '18px';
+                    document.querySelector('#reports .report-grid').after(output);
+                }
+
+                output.innerHTML = `
+            <h3>Active Ownership Contracts</h3>
+            ${data.length ? `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Patent ID</th>
+                            <th>Patent</th>
+                            <th>Owner</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.map(c => `
+                            <tr>
+                                <td>${c.patentId}</td>
+                                <td>${c.patentTitle}</td>
+                                <td>${c.ownerName}</td>
+                                <td>${c.startDate}</td>
+                                <td>${c.endDate}</td>
+                                <td>${c.amount ?? ''}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            ` : '<p>No ownership contracts are active today.</p>'}
+        `;
+                output.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } catch (error) {
+                console.error('Active contracts report error:', error);
+                alert('Could not load active contracts. Check the Console.');
+            }
+        }
+
+        async function loadMultipleContractsReport() {
+            if (!toggleReportVisibility('multipleContractsReport')) return;
+            try {
+                const response = await fetch('/api/reports/multiple-contracts');
+                if (!response.ok) throw new Error('Failed to load report');
+
+                const data = await response.json();
+
+                let output = document.getElementById('multipleContractsReport');
+                if (!output) {
+                    output = document.createElement('div');
+                    output.id = 'multipleContractsReport';
+                    output.className = 'panel';
+                    output.style.marginTop = '18px';
+                    document.querySelector('#reports .report-grid').after(output);
+                }
+
+                output.innerHTML = `
+            <h3>Patents with Multiple Contracts</h3>
+            ${data.length ? `
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Patent ID</th>
+                            <th>Patent Title</th>
+                            <th>Contract Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${data.map(p => `
+                            <tr>
+                                <td>${p.patentId}</td>
+                                <td>${p.patentTitle}</td>
+                                <td>${p.contractCount}</td>
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            ` : '<p>No patents have multiple contracts.</p>'}
+        `;
+
+                output.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } catch (error) {
+                console.error('Multiple contracts report error:', error);
+                alert('Could not load the report. Check the Console.');
+            }
+        }
+
+        async function loadTotalPerPatentReport() {
+            if (!toggleReportVisibility('totalPerPatentReport')) return;
+            try {
+                const response = await fetch('/api/reports/total-per-patent');
+                if (!response.ok) throw new Error('Failed to load report');
+
+                const data = await response.json();
+
+                let output = document.getElementById('totalPerPatentReport');
+                if (!output) {
+                    output = document.createElement('div');
+                    output.id = 'totalPerPatentReport';
+                    output.className = 'panel';
+                    output.style.marginTop = '18px';
+                    document.querySelector('#reports .report-grid').after(output);
+                }
+
+                output.innerHTML = `
+            <h3>Total Ownership Amount per Patent</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Patent ID</th>
+                        <th>Patent Title</th>
+                        <th>Total Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${data.map(p => `
+                        <tr>
+                            <td>${p.patentId}</td>
+                            <td>${p.patentTitle}</td>
+                            <td>${p.totalAmount ?? 0}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        `;
+
+                output.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            } catch (error) {
+                console.error('Total per patent report error:', error);
+                alert('Could not load the report. Check the Console.');
+            }
+        }
+
+        async function loadPatentStatusReport() {
+
+            // Handle show/hide using the common toggle function
+            if (!toggleReportVisibility('patentStatusButtonReport')) {
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/reports/status');
+
+                if (!response.ok) {
+                    throw new Error('Failed to load status report');
+                }
+
+                const data = await response.json();
+                if (activeReportId !== 'patentStatusButtonReport') return;
+                let output = document.getElementById('patentStatusButtonReport');
+
+                if (!output) {
+                    output = document.createElement('div');
+                    output.id = 'patentStatusButtonReport';
+                    output.className = 'panel report-result';
+                    output.style.marginTop = '18px';
+
+                    document.querySelector('#reports .report-grid').after(output);
+                }
+
+                output.innerHTML = `
+            <h3>Patent Status Summary</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Status</th>
+                        <th>Total Patents</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${data.map(item => `
+                        <tr>
+                            <td>${item.status}</td>
+                            <td>${item.total}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        `;
+
+                output.style.display = 'block';
+
+                output.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+
+            } catch (error) {
+                console.error('Patent status report error:', error);
+                alert('Could not load the patent status report. Check the Console.');
+            }
+        }
+
+        function renderContracts() {
+    const visibleContracts = showAllContracts
+        ? contracts
+        : contracts.slice(0, INITIAL_RECORD_LIMIT);
+
+    document.getElementById('contractRows').innerHTML = visibleContracts.map(c =>
+        `<tr>
+            <td>${c.patentId}</td>
+            <td>${c.ownerName ?? owners[c.ownerId] ?? c.ownerId}</td>
+            <td>${c.startDate ?? c.start}</td>
+            <td>${c.endDate ?? c.end}</td>
+            <td>${c.amount}</td>
+            <td>${c.payType ?? c.mode ?? ''}</td>
+        </tr>`
+    ).join('');
+
+    document.getElementById('contractsLoadMoreContainer').style.display =
+        !showAllContracts && contracts.length > INITIAL_RECORD_LIMIT
+            ? 'block'
+            : 'none';
+}
+
+function loadAllContracts() {
+    showAllContracts = true;
+    renderContracts();
+}
+        async function loadContractsFromDatabase() {
+            try {
+                const response = await fetch('/api/contracts');
+
+                if (!response.ok) {
+                    throw new Error('Failed to load contracts');
+                }
+
+                const data = await response.json();
+
+                contracts.length = 0;
+                contracts.push(...data);
+
+                renderContracts();
+            } catch (error) {
+                console.error('Error loading contracts:', error);
+            }
+        }
+
+        async function loadOwnersFromDatabase() {
+            const contractSelect = document.getElementById('contractOwnerId');
+            const durationSelect = document.getElementById('durationOwnerId');
+
+            try {
+                const response = await fetch('/api/owners');
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const owners = await response.json();
+
+                [contractSelect, durationSelect].forEach(select => {
+                    if (!select) return;
+
+                    select.innerHTML = '';
+
+                    const placeholder = document.createElement('option');
+                    placeholder.value = '';
+                    placeholder.textContent = 'Select owner / company';
+                    select.appendChild(placeholder);
+
+                    owners.forEach(owner => {
+                        const option = document.createElement('option');
+                        option.value = owner.ownerId;
+                        option.textContent = owner.ownerName;
+                        select.appendChild(option);
+                    });
+
+                    if (owners.length === 0) {
+                        placeholder.textContent = 'No companies found';
+                    }
+                });
+
+            } catch (error) {
+                console.error('Could not load companies:', error);
+
+                if (contractSelect) {
+                    contractSelect.innerHTML =
+                        '<option value="">Could not load companies</option>';
+                }
+
+                if (durationSelect) {
+                    durationSelect.innerHTML =
+                        '<option value="">Could not load companies</option>';
+                }
+            }
+        }
+
+        function todayLocal() { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; }
+        document.getElementById('ownerForm').addEventListener('submit', async function (e) {
+            e.preventDefault();
+
+            const ownerId = Number(document.getElementById('ownerIdInput').value);
+            const ownerName = document.getElementById('ownerNameInput').value.trim();
+
+            if (!Number.isInteger(ownerId) || ownerId <= 0 || !ownerName) {
+                showMessage(
+                    'ownerMessage',
+                    'Please enter a valid Owner ID and Owner Name.',
+                    'error'
+                );
+                return;
+            }
+
+            try {
+                // Check whether the Owner ID already exists
+                const checkResponse = await fetch('/api/owners');
+
+                if (!checkResponse.ok) {
+                    throw new Error('Could not check existing Owner IDs.');
+                }
+
+                const existingOwners = await checkResponse.json();
+
+                const duplicateOwner = existingOwners.some(
+                    owner => Number(owner.ownerId) === Number(ownerId)
+                );
+
+                if (duplicateOwner) {
+                    showMessage(
+                        'ownerMessage',
+                        'This Owner ID already exists. Please enter a different ID.',
+                        'error'
+                    );
+                    return;
+                }
+
+                // Register the new owner
+                const response = await fetch('/api/owners', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        ownerId: ownerId,
+                        ownerName: ownerName
+                    })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(
+                        result.details || result.error || 'Could not register owner.'
+                    );
+                }
+
+                // Clear the form
+                this.reset();
+
+                // Refresh the Owner / Company dropdown
+                await loadOwnersFromDatabase();
+
+                // Display success message
+                const ownerMessage = document.getElementById('ownerMessage');
+
+                ownerMessage.textContent = 'Owner registered successfully!';
+                ownerMessage.className = 'message success show';
+                ownerMessage.style.display = 'block';
+
+            } catch (error) {
+                console.error('Owner registration error:', error);
+
+                showMessage(
+                    'ownerMessage',
+                    error.message,
+                    'error'
+                );
+            }
+        });
+        document.getElementById('contractForm').addEventListener('submit', async e => {
+            e.preventDefault();
+
+            const patentId = Number(document.getElementById('contractPatentId').value);
+            const ownerId = Number(document.getElementById('contractOwnerId').value);
+            const startDate = document.getElementById('contractStart').value || todayLocal();
+            const endDate = document.getElementById('contractEnd').value;
+            const amount = Number(document.getElementById('contractAmount').value);
+            const payType = document.getElementById('paymentMode').value;
+
+            if (!patentId || !ownerId || !amount || amount <= 0 || !payType) {
+                showMessage('contractMessage',
+                    'Please select a patent, owner, positive amount and payment mode.',
+                    'error');
+                return;
+            }
+
+            if (endDate && endDate < startDate) {
+                showMessage('contractMessage',
+                    'End date cannot be earlier than the start date.',
+                    'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/contracts', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        patentId: patentId,
+                        ownerId: ownerId,
+                        startDate: startDate,
+                        endDate: endDate || null,
+                        amount: amount,
+                        payType: payType
+                    })
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.error || 'Could not save ownership contract.');
+                }
+
+                showMessage('contractMessage',
+                    'Ownership contract saved successfully!',
+                    'success');
+
+                document.getElementById('contractForm').reset();
+
+                await loadContractsFromDatabase();
+                await loadDashboardStats();
+
+            } catch (error) {
+                console.error('Contract registration error:', error);
+
+                showMessage('contractMessage',
+                    error.message,
+                    'error');
+            }
+        });
+        function previewDuration() { const p = document.getElementById('durationPatentId').value, o = document.getElementById('durationOwnerId').value; if (!p || !o) { showNotice('Patent and owner required', 'Select both a patent and owner.'); return; } showNotice('Contract duration', 'The connected Java application should execute select contract_duration(' + Number(p) + ', ' + Number(o) + '); and display the returned number of days.'); }
+        renderPatents();
+        loadUsersFromDatabase();
+        loadContractsFromDatabase();
+        loadOwnersFromDatabase();
+        async function loadDashboardStats() {
+            try {
+                const response = await fetch('/api/dashboard');
+
+                if (!response.ok) {
+                    throw new Error('Failed to load dashboard');
+                }
+
+                const stats = await response.json();
+
+                document.getElementById('patentCount').textContent = stats.totalPatents;
+                document.getElementById('grantedCount').textContent = stats.grantedPatents;
+                document.getElementById('userCount').textContent = stats.registeredUsers;
+                document.getElementById('contractCount').textContent = stats.ownershipContracts;
+
+                console.log('Live dashboard stats:', stats);
+            } catch (error) {
+                console.error('Dashboard loading error:', error);
+            }
+        }
+
+        loadDashboardStats();
+        loadPatentsFromDatabase();
+
+        async function calculateDuration() {
+            const patentId = document.getElementById('durationPatentId').value;
+            const ownerId = document.getElementById('durationOwnerId').value;
+
+            if (!patentId || !ownerId) {
+                alert('Please select both a patent and an owner.');
+                return;
+            }
+
+            try {
+                const response = await fetch(
+                    `/api/contract-duration?patentId=${encodeURIComponent(patentId)}&ownerId=${encodeURIComponent(ownerId)}`
+                );
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.error || 'Could not calculate duration.');
+                }
+
+                if (data.durationDays == null) {
+                    alert('No ownership contract exists for this patent and owner.');
+                    return;
+                }
+
+                showNotice(
+                    'Contract Duration',
+                    'The contract duration is ' + data.durationDays + ' days.'
+                );
+            } catch (error) {
+                console.error('Duration calculation error:', error);
+                alert(error.message);
+            }
+        }
+
+    </script>
+</body>
+
+</html>
