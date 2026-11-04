@@ -3,6 +3,7 @@
 bin/
 target/
 build/
+.vscode/
 
 # IDE files
 .metadata/
