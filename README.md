@@ -3,6 +3,9 @@
 
 PatentVault is a database-driven web application developed as a college DBMS project. It provides a centralized platform to manage patent information, ownership records, contracts, and collaborators.
 
+## Live Demo
+[PatentVault – Frontend Demo](https://patentvault.vercel.app/)  
+*Note: This is a frontend-only deployment hosted on Vercel. The Java/MySQL backend is not integrated, and all data operations use predefined sample data that resets on page refresh.*
 ## Project Overview
 
 PatentVault aims to simplify patent ownership management by allowing users to register patents, maintain ownership records, manage contracts, and track patent-related information through a user-friendly interface.
