@@ -42,7 +42,6 @@ The database supports information related to:
 ## Project Purpose
 
 This project was developed as part of an academic Database Management Systems (DBMS) project to demonstrate practical implementation of database connectivity, relational data management, CRUD operations, and report generation.
-**** Do not commit actual database passwords, private credentials, or sensitive database records to this repository.
 
 ## Author
 
